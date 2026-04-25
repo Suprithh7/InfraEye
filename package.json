@@ -1,0 +1,24 @@
+{
+  "name": "slumsafe-cv",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/dashboard",
+    "packages/shared",
+    "services/api-gateway",
+    "services/data-processing-service",
+    "services/inspection-service",
+    "services/notification-service",
+    "services/risk-scoring-service",
+    "services/satellite-service"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
+

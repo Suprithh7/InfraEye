@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package slumsafe.risk.v1;
+
+message RiskScoreRequest {
+  string city_id = 1;
+  string structure_id = 2;
+  double crack_count = 3;
+  double spall_area_ratio = 4;
+  double leaning_severity = 5;
+  double rainfall_mm_7d = 6;
+  double optical_delta = 7;
+  double sar_delta = 8;
+  double structure_age_years = 9;
+  double inspection_gap_days = 10;
+}
+
+message Contributor {
+  string feature = 1;
+  double contribution = 2;
+  string direction = 3;
+}
+
+message RiskScoreResponse {
+  double probability = 1;
+  double confidence = 2;
+  int32 reinspection_interval_days = 3;
+  repeated Contributor contributors = 4;
+}
+
+service RiskScoringService {
+  rpc ScoreRisk(RiskScoreRequest) returns (RiskScoreResponse);
+}
+

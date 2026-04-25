@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: slumsafe-config
+  namespace: slumsafe
+data:
+  APP_MODE: "production"
+  GCP_PROJECT_ID: "slumsafe-prod"
+  FIRESTORE_DATABASE: "(default)"
+  BIGQUERY_DATASET: "slumsafe_analytics"
+  GCS_BUCKET: "slumsafe-images-prod"
+

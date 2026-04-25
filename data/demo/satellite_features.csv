@@ -1,0 +1,7 @@
+structure_id,optical_delta,sar_delta,coverage_status,ndbi_delta,days_since_last_scene
+STR-001,0.34,0.19,optical,0.27,6
+STR-002,0.07,0.03,optical,0.04,4
+STR-003,0.00,0.28,sar,0.00,9
+STR-004,0.02,0.01,optical,0.03,3
+STR-005,0.16,0.14,partial,0.11,12
+

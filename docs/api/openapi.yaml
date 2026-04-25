@@ -1,0 +1,216 @@
+openapi: 3.1.0
+info:
+  title: SlumSafe CV API
+  version: 1.0.0
+  description: REST edge API for inspection upload, ranking, dashboard analytics, and risk explainability.
+servers:
+  - url: https://api.slumsafe.example.com/v1
+security:
+  - firebaseAuth: []
+paths:
+  /inspections:
+    post:
+      summary: Create an inspection record and issue an upload session
+      tags: [Inspection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInspectionRequest'
+      responses:
+        '201':
+          description: Inspection created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InspectionResponse'
+  /inspections/{inspectionId}/sync:
+    post:
+      summary: Mark an offline inspection as synchronized
+      tags: [Inspection]
+      parameters:
+        - in: path
+          name: inspectionId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Sync acknowledged
+  /risk-queue:
+    get:
+      summary: Fetch a ranked inspection queue
+      tags: [Risk]
+      parameters:
+        - in: query
+          name: cityId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: Ranked structures
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RiskQueueItem'
+  /structures/{structureId}/risk:
+    get:
+      summary: Retrieve risk score, explanation, and evidence
+      tags: [Risk]
+      parameters:
+        - in: path
+          name: structureId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Risk detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiskDetailResponse'
+  /satellite/features/{structureId}:
+    post:
+      summary: Trigger satellite feature refresh
+      tags: [Satellite]
+      parameters:
+        - in: path
+          name: structureId
+          required: true
+          schema:
+            type: string
+      responses:
+        '202':
+          description: Satellite job started
+  /reports/export:
+    post:
+      summary: Export analytics report
+      tags: [Analytics]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cityId:
+                  type: string
+                format:
+                  type: string
+                  enum: [pdf, csv]
+      responses:
+        '202':
+          description: Export requested
+components:
+  securitySchemes:
+    firebaseAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    CreateInspectionRequest:
+      type: object
+      required: [cityId, structureId, inspectorId, imageCount, damageFeatures]
+      properties:
+        cityId:
+          type: string
+        structureId:
+          type: string
+        inspectorId:
+          type: string
+        imageCount:
+          type: integer
+        damageFeatures:
+          type: object
+          properties:
+            crackCount:
+              type: integer
+            spallAreaRatio:
+              type: number
+            leaningSeverity:
+              type: number
+        captureQuality:
+          type: object
+          properties:
+            blurVariance:
+              type: number
+            lightingScore:
+              type: number
+        capturedAt:
+          type: string
+          format: date-time
+    InspectionResponse:
+      type: object
+      properties:
+        inspectionId:
+          type: string
+        uploadUrl:
+          type: string
+        status:
+          type: string
+          enum: [pending_upload, processing, completed]
+    RiskQueueItem:
+      type: object
+      properties:
+        structureId:
+          type: string
+        riskProbability:
+          type: number
+        confidence:
+          type: number
+        queueRank:
+          type: integer
+        nextInspectionDueDays:
+          type: integer
+        topFactors:
+          type: array
+          items:
+            type: string
+    RiskDetailResponse:
+      type: object
+      properties:
+        structureId:
+          type: string
+        cityId:
+          type: string
+        riskProbability:
+          type: number
+        confidence:
+          type: number
+        reinspectionIntervalDays:
+          type: integer
+        topContributors:
+          type: array
+          items:
+            type: object
+            properties:
+              feature:
+                type: string
+              direction:
+                type: string
+                enum: [increase, decrease]
+              contribution:
+                type: number
+        evidence:
+          type: object
+          properties:
+            latestInspectionId:
+              type: string
+            satelliteStatus:
+              type: string
+            rainfallMm7d:
+              type: number
+

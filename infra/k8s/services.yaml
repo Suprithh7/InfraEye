@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: risk-scoring-service
+  namespace: slumsafe
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: risk-scoring-service
+  template:
+    metadata:
+      labels:
+        app: risk-scoring-service
+    spec:
+      containers:
+        - name: risk-scoring-service
+          image: gcr.io/slumsafe-prod/risk-scoring-service:latest
+          ports:
+            - containerPort: 8082
+          envFrom:
+            - configMapRef:
+                name: slumsafe-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inspection-service
+  namespace: slumsafe
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: inspection-service
+  template:
+    metadata:
+      labels:
+        app: inspection-service
+    spec:
+      containers:
+        - name: inspection-service
+          image: gcr.io/slumsafe-prod/inspection-service:latest
+          ports:
+            - containerPort: 8081
+          envFrom:
+            - configMapRef:
+                name: slumsafe-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: satellite-service
+  namespace: slumsafe
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: satellite-service
+  template:
+    metadata:
+      labels:
+        app: satellite-service
+    spec:
+      containers:
+        - name: satellite-service
+          image: gcr.io/slumsafe-prod/satellite-service:latest
+          ports:
+            - containerPort: 8083
+          envFrom:
+            - configMapRef:
+                name: slumsafe-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service
+  namespace: slumsafe
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notification-service
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service
+          image: gcr.io/slumsafe-prod/notification-service:latest
+          ports:
+            - containerPort: 8084
+          envFrom:
+            - configMapRef:
+                name: slumsafe-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-processing-service
+  namespace: slumsafe
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: data-processing-service
+  template:
+    metadata:
+      labels:
+        app: data-processing-service
+    spec:
+      containers:
+        - name: data-processing-service
+          image: gcr.io/slumsafe-prod/data-processing-service:latest
+          envFrom:
+            - configMapRef:
+                name: slumsafe-config

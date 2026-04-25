@@ -1,0 +1,34 @@
+[
+  {
+    "inspectionId": "INSP-9001",
+    "structureId": "STR-001",
+    "cityId": "mumbai-dharavi",
+    "inspectorId": "INSP-MUM-01",
+    "capturedAt": "2026-04-15T09:25:00Z",
+    "damageFeatures": {
+      "crackCount": 13,
+      "spallAreaRatio": 0.22,
+      "leaningSeverity": 0.41
+    },
+    "captureQuality": {
+      "blurVariance": 148.0,
+      "lightingScore": 0.63
+    }
+  },
+  {
+    "inspectionId": "INSP-9002",
+    "structureId": "STR-003",
+    "cityId": "hyderabad-bholakpur",
+    "inspectorId": "INSP-HYD-04",
+    "capturedAt": "2026-04-11T12:05:00Z",
+    "damageFeatures": {
+      "crackCount": 8,
+      "spallAreaRatio": 0.17,
+      "leaningSeverity": 0.52
+    },
+    "captureQuality": {
+      "blurVariance": 122.4,
+      "lightingScore": 0.58
+    }
+  }
+]

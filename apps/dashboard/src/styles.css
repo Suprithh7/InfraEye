@@ -1,0 +1,220 @@
+:root {
+  font-family: "Bahnschrift", "Trebuchet MS", sans-serif;
+  color: #0f172a;
+  background: linear-gradient(135deg, #f6f7ef 0%, #d8eadf 45%, #c5d9e8 100%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+select {
+  font: inherit;
+}
+
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+}
+
+.sidebar {
+  padding: 32px;
+  background: rgba(8, 39, 49, 0.92);
+  color: white;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.lede {
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.role-card,
+.metric-grid article,
+.panel {
+  border-radius: 24px;
+}
+
+.role-card {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  margin-top: 24px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.role-card select {
+  border: none;
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.metric-grid {
+  margin-top: 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.metric-grid article {
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.metric-grid strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.6rem;
+}
+
+.main {
+  padding: 28px;
+  display: grid;
+  gap: 24px;
+}
+
+.hero,
+.content-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.hero {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
+.content-grid {
+  grid-template-columns: 0.9fr 1.1fr;
+}
+
+.panel {
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 20px 45px rgba(32, 53, 71, 0.12);
+  backdrop-filter: blur(10px);
+}
+
+.comparison {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.comparison p,
+.queue-item span,
+.small {
+  color: #4b5563;
+}
+
+.comparison span {
+  display: block;
+  margin-top: 4px;
+}
+
+.map-surface {
+  position: relative;
+  min-height: 280px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255, 99, 71, 0.25), transparent 20%),
+    radial-gradient(circle at 65% 50%, rgba(255, 166, 0, 0.22), transparent 22%),
+    linear-gradient(160deg, #dbeafe 0%, #cde7d8 100%);
+  overflow: hidden;
+}
+
+.map-point {
+  position: absolute;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: #b91c1c;
+  color: white;
+  cursor: pointer;
+}
+
+.queue-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.queue-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  background: white;
+  text-align: left;
+  cursor: pointer;
+}
+
+.queue-item.active {
+  border-color: #0b6e4f;
+  background: #ecfdf5;
+}
+
+.queue-item strong,
+.detail-panel h2 {
+  display: block;
+}
+
+.chips {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 18px 0;
+}
+
+.chips span {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.trend {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  height: 180px;
+  margin: 24px 0;
+}
+
+.trend div {
+  flex: 1;
+  border-radius: 16px 16px 0 0;
+  background: linear-gradient(180deg, #0b6e4f 0%, #58a67d 100%);
+}
+
+.exports {
+  display: flex;
+  gap: 12px;
+}
+
+.exports button {
+  padding: 12px 16px;
+  border: none;
+  border-radius: 14px;
+  background: #0f172a;
+  color: white;
+}
+
+@media (max-width: 1024px) {
+  .shell,
+  .hero,
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}

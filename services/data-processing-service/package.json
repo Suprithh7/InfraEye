@@ -1,0 +1,19 @@
+{
+  "name": "@slumsafe/data-processing-service",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/worker.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch src/worker.ts"
+  },
+  "dependencies": {
+    "@slumsafe/shared": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
+

@@ -1,0 +1,36 @@
+entity: structure_risk_features
+primary_keys:
+  - city_id
+  - structure_id
+features:
+  - name: crack_count
+    type: int64
+    source: cv_damage
+  - name: spall_area_ratio
+    type: float
+    source: cv_damage
+  - name: leaning_severity
+    type: float
+    source: cv_damage
+  - name: optical_delta
+    type: float
+    source: satellite
+  - name: sar_delta
+    type: float
+    source: satellite
+  - name: rainfall_mm_7d
+    type: float
+    source: weather
+  - name: structure_age_years
+    type: int64
+    source: master_data
+  - name: inspection_gap_days
+    type: int64
+    source: inspections
+  - name: prior_repairs
+    type: int64
+    source: inspections
+targets:
+  - name: collapse_30d
+    type: bool
+

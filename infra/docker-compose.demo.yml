@@ -1,0 +1,40 @@
+services:
+  api-gateway:
+    build:
+      context: ..
+      dockerfile: infra/docker/api-gateway.Dockerfile
+    environment:
+      APP_MODE: demo
+      PORT: 8080
+    ports:
+      - "8080:8080"
+  inspection-service:
+    build:
+      context: ..
+      dockerfile: infra/docker/inspection-service.Dockerfile
+    ports:
+      - "8081:8081"
+  risk-scoring-service:
+    build:
+      context: ..
+      dockerfile: infra/docker/risk-scoring-service.Dockerfile
+    ports:
+      - "8082:8082"
+  satellite-service:
+    build:
+      context: ..
+      dockerfile: infra/docker/satellite-service.Dockerfile
+    ports:
+      - "8083:8083"
+  notification-service:
+    build:
+      context: ..
+      dockerfile: infra/docker/notification-service.Dockerfile
+    ports:
+      - "8084:8084"
+  dashboard:
+    build:
+      context: ..
+      dockerfile: infra/docker/dashboard.Dockerfile
+    ports:
+      - "5173:80"

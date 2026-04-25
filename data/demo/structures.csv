@@ -1,0 +1,7 @@
+structure_id,city_id,name,ward,lat,lng,structure_age_years,material,last_inspection_days
+STR-001,mumbai-dharavi,Cluster A-12,Ward 1,19.0421,72.8577,28,brick_masonry,64
+STR-002,mumbai-dharavi,Cluster A-18,Ward 1,19.0428,72.8583,14,concrete_block,17
+STR-003,hyderabad-bholakpur,Lane 7 Shed 3,Ward 6,17.4426,78.4891,32,brick_masonry,103
+STR-004,hyderabad-bholakpur,Lane 10 House 2,Ward 6,17.4432,78.4885,9,reinf_concrete,11
+STR-005,mumbai-dharavi,Cluster C-04,Ward 3,19.0433,72.8592,22,brick_masonry,51
+
