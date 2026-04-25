@@ -17,6 +17,17 @@ select {
   font: inherit;
 }
 
+button {
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    opacity 140ms ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
 .shell {
   min-height: 100vh;
   display: grid;
@@ -43,15 +54,24 @@ select {
 
 .role-card,
 .metric-grid article,
-.panel {
+.panel,
+.session-card {
   border-radius: 24px;
 }
 
+.session-card,
 .role-card {
   display: grid;
   gap: 8px;
   padding: 18px;
   margin-top: 24px;
+}
+
+.session-card {
+  background: linear-gradient(135deg, rgba(210, 248, 225, 0.14), rgba(201, 229, 255, 0.12));
+}
+
+.role-card {
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -66,6 +86,15 @@ select {
   margin-top: 24px;
   display: grid;
   gap: 12px;
+}
+
+.status-banner {
+  margin-top: 18px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.5;
 }
 
 .metric-grid article {
@@ -114,7 +143,8 @@ select {
 
 .comparison p,
 .queue-item span,
-.small {
+.small,
+.audit-item span {
   color: #4b5563;
 }
 
@@ -142,28 +172,43 @@ select {
   background: #b91c1c;
   color: white;
   cursor: pointer;
+  box-shadow: 0 12px 22px rgba(185, 28, 28, 0.22);
 }
 
-.queue-panel {
+.queue-panel,
+.audit-panel {
   display: grid;
   gap: 12px;
+}
+
+.queue-item,
+.audit-item {
+  padding: 14px 16px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 18px;
+  background: white;
 }
 
 .queue-item {
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 16px;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 18px;
-  background: white;
   text-align: left;
   cursor: pointer;
+}
+
+.audit-item {
+  display: grid;
+  gap: 4px;
 }
 
 .queue-item.active {
   border-color: #0b6e4f;
   background: #ecfdf5;
+}
+
+.queue-item:hover {
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
 }
 
 .queue-item strong,
@@ -209,6 +254,25 @@ select {
   border-radius: 14px;
   background: #0f172a;
   color: white;
+  cursor: pointer;
+}
+
+.outcome {
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+}
+
+.outcome.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.outcome.pending_review {
+  background: #fef3c7;
+  color: #92400e;
 }
 
 @media (max-width: 1024px) {

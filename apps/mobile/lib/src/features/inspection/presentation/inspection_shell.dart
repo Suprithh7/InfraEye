@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
+import '../../../core/network/api_client.dart';
+import '../../../core/sync/sync_engine.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../inspection/application/edge_inference_service.dart';
+import '../../inspection/application/inspection_sync_service.dart';
 import '../../inspection/domain/inspection_record.dart';
 import '../../inspection/domain/sync_status.dart';
-import '../../../core/sync/sync_engine.dart';
 
 class InspectionShell extends StatefulWidget {
   const InspectionShell({super.key});
@@ -17,13 +19,32 @@ class InspectionShell extends StatefulWidget {
 class _InspectionShellState extends State<InspectionShell> {
   final EdgeInferenceService _inference = EdgeInferenceService();
   late final SyncEngine _syncEngine;
+  late final InspectionSyncService _syncService;
   DetectionResult? _lastResult;
-  bool _queued = false;
+  String _statusMessage = 'Ready for offline capture.';
+  int _pendingCount = 0;
+  bool _syncing = false;
 
   @override
   void initState() {
     super.initState();
     _syncEngine = SyncEngine(Hive.box<Map>('inspection_queue'));
+    _syncService = InspectionSyncService(
+      syncEngine: _syncEngine,
+      apiClient: ApiClient(),
+    );
+    _refreshPendingCount();
+  }
+
+  Future<void> _refreshPendingCount() async {
+    final pendingCount = await _syncEngine.pendingCount();
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _pendingCount = pendingCount;
+    });
   }
 
   Future<void> _captureAndQueue() async {
@@ -42,11 +63,37 @@ class _InspectionShellState extends State<InspectionShell> {
       syncStatus: SyncStatus.pending,
     );
 
-    await _syncEngine.enqueue(record);
+    await _syncService.enqueue(record);
+    await _refreshPendingCount();
     setState(() {
       _lastResult = result;
-      _queued = true;
+      _statusMessage = 'Captured securely and queued for sync.';
     });
+  }
+
+  Future<void> _syncQueuedInspections() async {
+    setState(() {
+      _syncing = true;
+      _statusMessage = 'Syncing queued inspections to the gateway...';
+    });
+
+    try {
+      final syncedCount = await _syncService.syncPending();
+      await _refreshPendingCount();
+      setState(() {
+        _statusMessage = 'Sync complete. $syncedCount inspection(s) accepted by the gateway.';
+      });
+    } catch (_) {
+      setState(() {
+        _statusMessage = 'Sync failed. Inspections remain queued for retry.';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _syncing = false;
+        });
+      }
+    }
   }
 
   @override
@@ -83,10 +130,35 @@ class _InspectionShellState extends State<InspectionShell> {
               ),
             ),
             const SizedBox(height: 20),
-            FilledButton.icon(
-              onPressed: _captureAndQueue,
-              icon: const Icon(Icons.camera_alt_outlined),
-              label: Text(l10n.captureCta),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                FilledButton.icon(
+                  onPressed: _captureAndQueue,
+                  icon: const Icon(Icons.camera_alt_outlined),
+                  label: Text(l10n.captureCta),
+                ),
+                OutlinedButton.icon(
+                  onPressed: _syncing ? null : _syncQueuedInspections,
+                  icon: _syncing
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.sync_outlined),
+                  label: Text('Sync queue ($_pendingCount)'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Card(
+              color: const Color(0xFFF1F5F9),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(_statusMessage),
+              ),
             ),
             const SizedBox(height: 16),
             if (_lastResult != null)
@@ -101,7 +173,7 @@ class _InspectionShellState extends State<InspectionShell> {
                       Text('Cracks: ${_lastResult!.crackCount}'),
                       Text('Spall ratio: ${_lastResult!.spallAreaRatio.toStringAsFixed(2)}'),
                       Text('Leaning severity: ${_lastResult!.leaningSeverity.toStringAsFixed(2)}'),
-                      if (_queued) const Text('Saved securely for sync when connectivity is available.'),
+                      Text('Pending local queue: $_pendingCount'),
                     ],
                   ),
                 ),
@@ -125,4 +197,3 @@ class _InspectionShellState extends State<InspectionShell> {
     );
   }
 }
-

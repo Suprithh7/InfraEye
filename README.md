@@ -49,7 +49,7 @@ npm run dev
 ```bash
 cd apps/mobile
 flutter pub get
-flutter run
+flutter run --dart-define=SLUMSAFE_API_URL=http://10.0.2.2:8080
 ```
 
 6. Train the demo risk model:
@@ -61,6 +61,16 @@ python -m venv .venv
 pip install -r requirements.txt
 python pipelines/run_local_training.py
 ```
+
+## Local demo verification
+
+With the API gateway running locally, verify the demo endpoints:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File infra/scripts/verify-demo.ps1
+```
+
+The dashboard uses the same gateway contracts for city summary, ranked queue, structure detail, exports, and audit activity. The mobile app now queues inspections locally and can sync them to the gateway with the `Sync queue` action.
 
 ## Demo mode
 
@@ -76,4 +86,3 @@ The platform follows:
 - GCP-native storage and compute: Firestore, BigQuery, Cloud Storage, Vertex AI, and GKE.
 
 See [docs/architecture.md](/C:/Users/suprisuprith/InfraEye/docs/architecture.md) for the full architecture diagram and [docs/demo-walkthrough.md](/C:/Users/suprisuprith/InfraEye/docs/demo-walkthrough.md) for the demo script.
-

@@ -8,6 +8,57 @@ servers:
 security:
   - firebaseAuth: []
 paths:
+  /auth/demo-session:
+    post:
+      summary: Create a demo operator session for the dashboard or mobile demo mode
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  enum: [Inspector, Supervisor, Admin]
+      responses:
+        '200':
+          description: Demo session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DemoSession'
+  /cities:
+    get:
+      summary: List supported city deployments
+      tags: [Analytics]
+      responses:
+        '200':
+          description: City list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CityOption'
+  /dashboard/summary:
+    get:
+      summary: Fetch city summary metrics and before-vs-after queue snapshot
+      tags: [Analytics]
+      parameters:
+        - in: query
+          name: cityId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardSummary'
   /inspections:
     post:
       summary: Create an inspection record and issue an upload session
@@ -38,6 +89,33 @@ paths:
       responses:
         '200':
           description: Sync acknowledged
+  /audit/logs:
+    get:
+      summary: Retrieve audit logs for operational activity
+      tags: [Analytics]
+      parameters:
+        - in: query
+          name: cityId
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: role
+          schema:
+            type: string
+            enum: [Inspector, Supervisor, Admin]
+      responses:
+        '200':
+          description: Audit log feed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AuditLogItem'
   /risk-queue:
     get:
       summary: Fetch a ranked inspection queue
@@ -53,6 +131,11 @@ paths:
           schema:
             type: integer
             default: 50
+        - in: query
+          name: role
+          schema:
+            type: string
+            enum: [Inspector, Supervisor, Admin]
       responses:
         '200':
           description: Ranked structures
@@ -112,8 +195,12 @@ paths:
                   type: string
                   enum: [pdf, csv]
       responses:
-        '202':
-          description: Export requested
+        '200':
+          description: Export generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportExportResponse'
 components:
   securitySchemes:
     firebaseAuth:
@@ -162,11 +249,79 @@ components:
         status:
           type: string
           enum: [pending_upload, processing, completed]
+    DemoSession:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            role:
+              type: string
+              enum: [Inspector, Supervisor, Admin]
+            cityIds:
+              type: array
+              items:
+                type: string
+    CityOption:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        region:
+          type: string
+    DashboardSummary:
+      type: object
+      properties:
+        cityId:
+          type: string
+        cityName:
+          type: string
+        totalStructures:
+          type: integer
+        highRiskStructures:
+          type: integer
+        averageApiResponseMs:
+          type: integer
+        coverageRate:
+          type: number
+        prioritizedQueue:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueueSnapshot'
+        randomQueue:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueueSnapshot'
+    QueueSnapshot:
+      type: object
+      properties:
+        structureId:
+          type: string
+        riskProbability:
+          type: number
     RiskQueueItem:
       type: object
       properties:
         structureId:
           type: string
+        locality:
+          type: string
+        city:
+          type: string
+        ward:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
         riskProbability:
           type: number
         confidence:
@@ -179,6 +334,29 @@ components:
           type: array
           items:
             type: string
+        assignedLabel:
+          type: string
+    AuditLogItem:
+      type: object
+      properties:
+        id:
+          type: string
+        cityId:
+          type: string
+        actorName:
+          type: string
+        actorRole:
+          type: string
+          enum: [Inspector, Supervisor, Admin]
+        action:
+          type: string
+        targetId:
+          type: string
+        occurredAt:
+          type: string
+          format: date-time
+        outcome:
+          type: string
     RiskDetailResponse:
       type: object
       properties:
@@ -186,12 +364,20 @@ components:
           type: string
         cityId:
           type: string
+        locality:
+          type: string
+        ward:
+          type: string
         riskProbability:
           type: number
         confidence:
           type: number
         reinspectionIntervalDays:
           type: integer
+        trend:
+          type: array
+          items:
+            type: number
         topContributors:
           type: array
           items:
@@ -213,4 +399,14 @@ components:
               type: string
             rainfallMm7d:
               type: number
-
+            footprintSource:
+              type: string
+    ReportExportResponse:
+      type: object
+      properties:
+        fileName:
+          type: string
+        contentType:
+          type: string
+        content:
+          type: string

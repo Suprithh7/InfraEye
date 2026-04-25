@@ -14,6 +14,8 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces",
+    "demo:api": "npm run dev --workspace services/api-gateway",
+    "demo:verify": "powershell -ExecutionPolicy Bypass -File infra/scripts/verify-demo.ps1",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present"
   },
@@ -21,4 +23,3 @@
     "node": ">=20.0.0"
   }
 }
-

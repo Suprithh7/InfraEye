@@ -1,4 +1,5 @@
 export const config = {
+  appMode: process.env.APP_MODE ?? "demo",
   port: Number(process.env.PORT ?? 8080),
   jwtSecret: process.env.JWT_SECRET ?? "dev-secret",
   serviceEndpoints: {
@@ -8,4 +9,3 @@ export const config = {
     notification: process.env.NOTIFICATION_SERVICE_URL ?? "http://notification-service:8084",
   },
 };
-

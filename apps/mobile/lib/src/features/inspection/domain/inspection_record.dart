@@ -12,6 +12,7 @@ class InspectionRecord {
     required this.lightingScore,
     required this.updatedAt,
     required this.syncStatus,
+    this.remoteInspectionId,
   });
 
   final String id;
@@ -24,6 +25,7 @@ class InspectionRecord {
   final double lightingScore;
   final DateTime updatedAt;
   final SyncStatus syncStatus;
+  final String? remoteInspectionId;
 
   Map<String, dynamic> toMap() => {
         'id': id,
@@ -36,6 +38,7 @@ class InspectionRecord {
         'lightingScore': lightingScore,
         'updatedAt': updatedAt.toIso8601String(),
         'syncStatus': syncStatus.name,
+        'remoteInspectionId': remoteInspectionId,
       };
 
   factory InspectionRecord.fromMap(Map<String, dynamic> map) => InspectionRecord(
@@ -49,6 +52,6 @@ class InspectionRecord {
         lightingScore: (map['lightingScore'] as num).toDouble(),
         updatedAt: DateTime.parse(map['updatedAt'] as String),
         syncStatus: SyncStatus.values.byName(map['syncStatus'] as String),
+        remoteInspectionId: map['remoteInspectionId'] as String?,
       );
 }
-

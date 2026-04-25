@@ -6,6 +6,7 @@ import { registerRoutes } from "./routes.js";
 
 const app = Fastify({
   logger: true,
+  requestIdHeader: "x-trace-id",
 });
 
 await app.register(cors, {
@@ -21,11 +22,17 @@ app.addHook("preHandler", async (request) => {
     return;
   }
 
-  if (process.env.APP_MODE === "demo") {
+  if (config.appMode === "demo") {
     return;
   }
 
   await request.jwtVerify();
+});
+
+app.addHook("onSend", async (request, reply, payload) => {
+  reply.header("x-slumsafe-role", request.headers["x-demo-role"] ?? "Supervisor");
+  reply.header("x-slumsafe-mode", config.appMode);
+  return payload;
 });
 
 await registerRoutes(app);
@@ -34,4 +41,3 @@ app.listen({ port: config.port, host: "0.0.0.0" }).catch((error) => {
   app.log.error(error);
   process.exit(1);
 });
-

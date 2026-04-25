@@ -20,7 +20,30 @@ class SyncEngine {
       ..sort((a, b) => a.updatedAt.compareTo(b.updatedAt));
   }
 
-  Future<void> markSynced(String id) async {
+  Future<int> pendingCount() async {
+    return (await pending()).length;
+  }
+
+  Future<void> markSyncing(String id) async {
+    await _update(id, {
+      'syncStatus': SyncStatus.syncing.name,
+    });
+  }
+
+  Future<void> markSynced(String id, String remoteInspectionId) async {
+    await _update(id, {
+      'syncStatus': SyncStatus.synced.name,
+      'remoteInspectionId': remoteInspectionId,
+    });
+  }
+
+  Future<void> markFailed(String id) async {
+    await _update(id, {
+      'syncStatus': SyncStatus.failed.name,
+    });
+  }
+
+  Future<void> _update(String id, Map<String, dynamic> patch) async {
     final current = _box.get(id);
     if (current == null) {
       return;
@@ -28,7 +51,7 @@ class SyncEngine {
 
     await _box.put(id, {
       ...Map<String, dynamic>.from(current),
-      'syncStatus': SyncStatus.synced.name,
+      ...patch,
     });
   }
 
@@ -37,4 +60,3 @@ class SyncEngine {
     await _box.put(winner.id, winner.toMap());
   }
 }
-
